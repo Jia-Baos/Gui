@@ -13,3 +13,9 @@ if __name__ == '__main__':
     print(type(my_dict))
     print(my_dict)
 
+    a = 10
+    b =11
+    print('='.join([str(a),str(b)]))
+
+
+
