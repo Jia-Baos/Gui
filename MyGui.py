@@ -63,7 +63,11 @@ class Application(Frame):
         self.attr_value_label.pack(side=LEFT)
         var2 = StringVar()
         self.attr_value_entry = Entry(self, textvariable=var2)
-        self.attr_value_entry.pack(side=RIGHT)
+        self.attr_value_entry.pack(side=LEFT)
+
+        # 将reset_attr按钮移动到新的位置，方便操作，这个按钮有点丑啊
+        self.button_reset = Button(self, text="reset_attribute", command=self.reset_attribute)
+        self.button_reset.pack(side=RIGHT)
 
         # 文本编辑区
         self.textpad1 = Text(root, width=40, height=30, state="normal")
@@ -110,10 +114,12 @@ class Application(Frame):
     def savefile(self):
         with open(self.filepath, 'w') as f:
             filecontent = self.textpad1.get(1.0, END)
-            f.write(filecontent)
+            # 避免save后在文本末尾追加空行
+            print(filecontent[:-1])
+            f.write(filecontent[:-1])
 
     def myreact(self):
-        messagebox.showinfo("Message", "you have input the right username and passward")
+        messagebox.showinfo("Message", "this func can't use")
 
     def exit(self):
         root.quit()
@@ -126,11 +132,16 @@ class Application(Frame):
             with open(self.json_file_path, 'r', encoding='utf-8') as load_f:
                 load_dict = json.load(load_f)
                 # dict_pre = '='.join([self.attr_name_entry.get(), self.attr_value_entry.get()])
-                dict_pre = dict()
-                print(type(self.attr_name_entry.get()))
-                dict_pre[self.attr_name_entry.get()] = self.attr_value_entry.get()
-                load_dict.update(dict_pre)
-                print(load_dict)
+                # 避免添加空白字典对象进json文件
+                if len(self.attr_name_entry.get()) == 0:
+                    pass
+
+                elif len(self.attr_name_entry.get()) >= 1:
+                    dict_pre = dict()
+                    print(type(self.attr_name_entry.get()))
+                    dict_pre[self.attr_name_entry.get()] = self.attr_value_entry.get()
+                    load_dict.update(dict_pre)
+                    print(load_dict)
 
             with open(self.json_file_path, 'w', encoding='utf-8') as dump_f:
                 json.dump(load_dict, dump_f, ensure_ascii=False)
