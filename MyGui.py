@@ -199,6 +199,31 @@ class Application(Frame):
                 self.filepath = os.path.join(os.getcwd(), tdir)
                 self.var_name_content.set(self.txt_file_name)
 
+                # 显示属性
+                # 再次show之前要清空textpad2的内容
+                if os.access(self.json_file_path, os.F_OK):
+                    with open(self.json_file_path, 'r', encoding='utf-8') as load_f:
+                        load_dict = json.load(load_f)
+                        for key, value in load_dict.items():
+                            # print(key, value)
+                            self.textpad2.insert(INSERT, key)
+                            self.textpad2.insert(INSERT, ": ")
+                            self.textpad2.insert(INSERT, value)
+                            self.textpad2.insert(INSERT, "\n")
+                        # 使得textpad2里的内容不可修改
+                        self.textpad2.config(state="disabled")
+
+                else:
+                    print('未找到文件')
+
+                # 绘图
+                self.fig.clear()
+                value = np.loadtxt(self.filepath)
+                x = range(len(value))
+                ax = self.fig.add_subplot(111)
+                ax.plot(x, value)
+                self.canvas.draw()
+
 
         # 如果发生错误，之前的目录就会重设为当前目录
         if error:
