@@ -15,12 +15,12 @@ class Application(Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        self.pack()
+        # self.grid()
         self.createWidget()
 
     def createWidget(self):
         # 新建主菜单栏
-        mainmenu = Menu(root)
+        mainmenu = Menu(self.master)
 
         # 创建子菜单栏
         menuFile = Menu(mainmenu)
@@ -52,41 +52,41 @@ class Application(Frame):
         root["menu"] = mainmenu
 
         # 显示当前文件名字
-        self.attr_name_label = Label(self, text="curr_name's name")
-        self.attr_name_label.pack(side=TOP)
-        self.var_name = StringVar()
-        self.var_name = Entry(self, textvariable=self.var_name)
-        self.var_name.pack(side=TOP)
-
+        self.attr_name_label = Label(self.master, text="curr_name's name")
+        self.attr_name_label.grid(row=0, column=0, pady=10)
+        self.var_name_content = StringVar()
+        self.var_name_content.set("no file")
+        self.var_name = Label(self.master, textvariable=self.var_name_content)
+        self.var_name.grid(row=0, column=1)
 
         # attribute's name
-        self.attr_name_label = Label(self, text="attribute's name")
-        self.attr_name_label.pack(side=LEFT)
+        self.attr_name_label = Label(self.master, text="attribute's name")
+        self.attr_name_label.grid(row=1, column=0)
         var1 = StringVar()
-        self.attr_name_entry = Entry(self, textvariable=var1)
-        self.attr_name_entry.pack(side=LEFT)
+        self.attr_name_entry = Entry(self.master, textvariable=var1)
+        self.attr_name_entry.grid(row=1, column=1, pady=10)
 
         # attribute's value
-        self.attr_value_label = Label(self, text="attribute's value")
-        self.attr_value_label.pack(side=LEFT)
+        self.attr_value_label = Label(self.master, text="attribute's value")
+        self.attr_value_label.grid(row=1, column=5)
         var2 = StringVar()
-        self.attr_value_entry = Entry(self, textvariable=var2)
-        self.attr_value_entry.pack(side=LEFT)
+        self.attr_value_entry = Entry(self.master, textvariable=var2)
+        self.attr_value_entry.grid(row=1, column=6, pady=10)
 
         # 将reset_attr按钮移动到新的位置，方便操作，这个按钮有点丑啊
-        self.button_reset = Button(self, text="reset_attribute", command=self.reset_attribute)
-        self.button_reset.pack(side=RIGHT)
+        self.button_reset = Button(self.master, text="reset_attribute", command=self.reset_attribute)
+        self.button_reset.grid(row=0, column=6)
 
         # 文本编辑区
-        self.textpad1 = Text(root, width=40, height=30, state="normal")
-        self.textpad1.pack(side=LEFT)
+        self.textpad1 = Text(self.master, width=40, height=30, state="normal")
+        self.textpad1.grid(row=2, column=0, rowspan=1, columnspan=5, padx=10)
 
-        self.textpad2 = Text(root, width=40, height=30, state="normal")
-        self.textpad2.pack(side=RIGHT)
+        self.textpad2 = Text(self.master, width=40, height=30, state="normal")
+        self.textpad2.grid(row=2, column=5, rowspan=1, columnspan=5, padx=10)
 
         # 创建上下菜单，想借此实现跳转上一个或下一个文件，但是实现有难度
         # 思路，直接将所有文件的路径存入队列，之后访问队列
-        self.contextMenu = Menu(root)
+        self.contextMenu = Menu(self.master)
         self.contextMenu.add_command(label="the previous", command=self.previous_file)
         self.contextMenu.add_command(label="the next", command=self.next_file)
 
@@ -126,6 +126,7 @@ class Application(Frame):
             # 其只影响save和drawpicture
             self.filepath = f.name
             print(f.name)
+            self.var_name_content.set(self.txt_file_name)
 
     def savefile(self):
         print("savefile: ")
@@ -268,6 +269,7 @@ class Application(Frame):
             txt_file_name_split_previous = self.txt_file_name[:-4]
             json_file_temp_path = os.path.join(txt_file_path_split_previous, 'Attributes/')
             self.json_file_path = os.path.join(json_file_temp_path, txt_file_name_split_previous + '.json')
+            self.var_name_content.set(self.txt_file_name)
 
     def next_file(self):
         # 每次打开一个新文件都要清空textpad1的内容
@@ -297,11 +299,12 @@ class Application(Frame):
             txt_file_name_split_next = self.txt_file_name[:-4]
             json_file_temp_path = os.path.join(txt_file_path_split_next, 'Attributes/')
             self.json_file_path = os.path.join(json_file_temp_path, txt_file_name_split_next + '.json')
+            self.var_name_content.set(self.txt_file_name)
 
 
 if __name__ == '__main__':
     root = Tk()
     root.title('my first Gui')
-    root.geometry('600x500+100+200')
+    root.geometry('610x500+100+200')
     app = Application(master=root)
     root.mainloop()
