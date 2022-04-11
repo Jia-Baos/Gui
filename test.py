@@ -17,5 +17,8 @@ if __name__ == '__main__':
     b =11
     print('='.join([str(a),str(b)]))
 
+    test = "dksahfjsh"
+    print(test[-4:])
+
 
 
